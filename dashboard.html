@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - TOKO & FILS</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .navbar-brand {
+            font-weight: bold;
+            font-size: 1.5rem;
+        }
+        .table-responsive {
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .message-cell {
+            max-width: 300px;
+            word-wrap: break-word;
+        }
+        .btn-reply {
+            background-color: #28a745;
+            border-color: #28a745;
+            color: white;
+        }
+        .btn-reply:hover {
+            background-color: #218838;
+            border-color: #1e7e34;
+            color: white;
+        }
+        @media (max-width: 768px) {
+            .navbar-brand {
+                font-size: 1.2rem;
+            }
+            .search-form {
+                margin-top: 10px;
+            }
+            .message-cell {
+                max-width: 200px;
+            }
+        }
+        .dashboard-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 2rem 0;
+            margin-bottom: 2rem;
+        }
+    </style>
+</head>
+<body class="bg-light">
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container-fluid">
+            <!-- Logo/Nom de l'entreprise -->
+            <a class="navbar-brand" href="#">
+                <i class="fas fa-building me-2"></i>
+                TOKO & FILS
+            </a>
+            
+            <!-- Bouton toggle pour mobile -->
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent" aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <!-- Contenu de la navbar -->
+            <div class="collapse navbar-collapse" id="navbarContent">
+                <div class="ms-auto">
+                    <!-- Barre de recherche par date -->
+                    <form class="d-flex search-form" role="search">
+                        <input type="date" class="form-control me-2" id="searchDate" placeholder="Rechercher par date">
+                        <button class="btn btn-outline-light" type="button" onclick="searchByDate()">
+                            <i class="fas fa-search"></i>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- En-tête du dashboard -->
+    <div class="dashboard-header">
+        <div class="container">
+            <h1 class="display-4">
+                <i class="fas fa-tachometer-alt me-3"></i>
+                Dashboard de Gestion
+            </h1>
+            <p class="lead">Gérez vos messages et communications</p>
+        </div>
+    </div>
+
+    <!-- Corps principal -->
+    <div class="container-fluid px-4">
+        <div class="row">
+            <div class="col-12">
+                <!-- En-tête du tableau -->
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h2 class="h3">
+                        <i class="fas fa-envelope me-2 text-primary"></i>
+                        Messages Reçus
+                    </h2>
+                    <span class="badge bg-primary fs-6" id="messageCount">5 messages</span>
+                </div>
+
+                <!-- Tableau des messages -->
+                <div class="table-responsive">
+                    <table class="table table-hover table-striped bg-white">
+                        <thead class="table-dark">
+                            <tr>
+                                <th scope="col">
+                                    <i class="fas fa-user me-2"></i>Nom
+                                </th>
+                                <th scope="col">
+                                    <i class="fas fa-envelope me-2"></i>Email
+                                </th>
+                                <th scope="col">
+                                    <i class="fas fa-comment me-2"></i>Message
+                                </th>
+                                <th scope="col">
+                                    <i class="fas fa-calendar me-2"></i>Date
+                                </th>
+                                <th scope="col">
+                                    <i class="fas fa-cogs me-2"></i>Actions
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody id="messagesTable">
+                            <tr>
+                                <td><strong></strong></td>
+                                <td></td>
+                                <td class="message-cell"></td>
+                                <td><small class="text-muted"></small></td>
+                                <td>
+                                    <button class="btn btn-reply btn-sm" onclick="replyToMessage('Jean Dupont', 'jean.dupont@email.com')">
+                                        <i class="fas fa-reply me-1"></i>Répondre
+                                    </button>
+                                </td>
+                            </tr>
+                            
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal pour répondre aux messages -->
+    <div class="modal fade" id="replyModal" tabindex="-1" aria-labelledby="replyModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title" id="replyModalLabel">
+                        <i class="fas fa-reply me-2"></i>Répondre au message
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <div class="mb-3">
+                            <label for="recipientName" class="form-label">Destinataire</label>
+                            <input type="text" class="form-control" id="recipientName" readonly>
+                        </div>
+                        <div class="mb-3">
+                            <label for="recipientEmail" class="form-label">Email</label>
+                            <input type="email" class="form-control" id="recipientEmail" readonly>
+                        </div>
+                        <div class="mb-3">
+                            <label for="replySubject" class="form-label">Sujet</label>
+                            <input type="text" class="form-control" id="replySubject" placeholder="Entrez le sujet de votre réponse">
+                        </div>
+                        <div class="mb-3">
+                            <label for="replyMessage" class="form-label">Message</label>
+                            <textarea class="form-control" id="replyMessage" rows="5" placeholder="Tapez votre réponse ici..."></textarea>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <i class="fas fa-times me-1"></i>Annuler
+                    </button>
+                    <button type="button" class="btn btn-primary" onclick="sendReply()">
+                        <i class="fas fa-paper-plane me-1"></i>Envoyer
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts Bootstrap -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        // Fonction pour répondre à un message
+        function replyToMessage(name, email) {
+            document.getElementById('recipientName').value = name;
+            document.getElementById('recipientEmail').value = email;
+            document.getElementById('replySubject').value = 'Re: Votre message';
+            document.getElementById('replyMessage').value = '';
+            
+            const replyModal = new bootstrap.Modal(document.getElementById('replyModal'));
+            replyModal.show();
+        }
+
+        // Fonction pour envoyer la réponse
+        function sendReply() {
+            const name = document.getElementById('recipientName').value;
+            const email = document.getElementById('recipientEmail').value;
+            const subject = document.getElementById('replySubject').value;
+            const message = document.getElementById('replyMessage').value;
+            
+            if (!subject || !message) {
+                alert('Veuillez remplir le sujet et le message.');
+                return;
+            }
+            
+            // Ici vous pourriez ajouter le code pour envoyer l'email
+            alert(`Réponse envoyée à ${name} (${email})!`);
+            
+            // Fermer le modal
+            const replyModal = bootstrap.Modal.getInstance(document.getElementById('replyModal'));
+            replyModal.hide();
+        }
+
+        // Fonction pour rechercher par date
+        function searchByDate() {
+            const searchDate = document.getElementById('searchDate').value;
+            if (!searchDate) {
+                alert('Veuillez sélectionner une date.');
+                return;
+            }
+            
+            const rows = document.querySelectorAll('#messagesTable tr');
+            let visibleCount = 0;
+            
+            rows.forEach(row => {
+                const dateCell = row.querySelector('td:nth-child(4) small');
+                if (dateCell) {
+                    const rowDate = dateCell.textContent.trim();
+                    if (rowDate === searchDate) {
+                        row.style.display = '';
+                        visibleCount++;
+                    } else {
+                        row.style.display = 'none';
+                    }
+                }
+            });
+            
+            // Mettre à jour le compteur
+            document.getElementById('messageCount').textContent = `${visibleCount} message(s) trouvé(s)`;
+            
+            if (visibleCount === 0) {
+                alert('Aucun message trouvé pour cette date.');
+            }
+        }
+
+        // Fonction pour réinitialiser la recherche
+        function resetSearch() {
+            document.getElementById('searchDate').value = '';
+            const rows = document.querySelectorAll('#messagesTable tr');
+            rows.forEach(row => {
+                row.style.display = '';
+            });
+            document.getElementById('messageCount').textContent = '5 messages';
+        }
+
+        // Ajouter un bouton reset (optionnel)
+        document.addEventListener('DOMContentLoaded', function() {
+            const searchButton = document.querySelector('.btn-outline-light');
+            const resetButton = document.createElement('button');
+            resetButton.className = 'btn btn-outline-secondary ms-1';
+            resetButton.innerHTML = '<i class="fas fa-undo"></i>';
+            resetButton.title = 'Réinitialiser';
+            resetButton.onclick = resetSearch;
+            searchButton.parentNode.appendChild(resetButton);
+        });
+    </script>
+</body>
+</html>

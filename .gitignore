@@ -1,0 +1,11 @@
+.env
+.env.*
+!.env.example
+*.log
+
+/vendor/
+/PHPMailer-master/
+
+.DS_Store
+Thumbs.db
+.vscode/
